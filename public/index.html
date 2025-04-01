@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Whistle插件</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Whistle GitHub 同步工具</h1>
+    
+    <div class="container">
+      <div id="status-message">
+        <p>
+          <span>状态:</span> 
+          <span id="sync-status">未配置</span>
+        </p>
+        <p>
+          <span>上次更新:</span>
+          <span id="last-updated">从未</span>
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label for="repo-url">GitHub 仓库地址</label>
+        <input
+          type="text"
+          id="repo-url"
+          placeholder="输入您的GitHub仓库地址, 格式: owner/repo"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="github-token">
+          GitHub Token
+          <span class="optional">(可选，用于提高API访问限制)</span>
+        </label>
+        <input
+          type="text"
+          id="github-token"
+          placeholder="输入您的GitHub个人访问令牌"
+        />
+      </div>
+
+      <div id="notification" class="notification hide"></div>
+      
+      <div class="button-group">
+        <button id="save-config-btn">保存配置</button>
+      </div>
+      
+      <div class="loader" id="loader"></div>
+      
+      <div id="file-list">
+        <h3>选择需要同步的文件</h3>
+        <div id="files-container"></div>
+      </div>
+      
+      <button id="confirm-btn" style="display: none;">
+        确认选择
+      </button>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

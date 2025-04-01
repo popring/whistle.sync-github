@@ -1,0 +1,27 @@
+{
+  "name": "whistle.sync-github",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "tsc -w"
+  },
+  "whistleConfig": {
+    "rulesUrl": "/cgi-bin/rules",
+    "valuesUrl": "/cgi-bin/values"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.13.4",
+    "@types/koa-bodyparser": "^4.3.5",
+    "@types/koa-router": "^7.4.4",
+    "@types/koa-static": "^4.0.2",
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "axios": "^1.8.4",
+    "koa": "^2.15.0",
+    "koa-bodyparser": "^4.4.1",
+    "koa-onerror": "^4.2.0",
+    "koa-router": "^12.0.1",
+    "koa-static": "^5.0.0"
+  }
+}
