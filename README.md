@@ -18,10 +18,14 @@
 
 将需要备份的配置上传到仓库即可
 
-文件内容若以 `# Rules` 则视为 Rules 配置，其他均为 Values 配置。
+**文件内容以 `# Rules` 则视为 Rules 配置，其他均为 Values 配置。**
 
 # 使用
 
 - 打开 `https://local.whistlejs.com/#plugins` ， 进入 plugin 页面，点击 whistle.sync-github `option` 进入配置，填写完成后点击保存配置
 - 返回插件列表页，点击 sync 进行同步，弹出弹窗选择 Rules/Values，点击即可拉取 github 仓库文件。
 
+# 注意事项
+
+- 如需使用 token ，记得 token 权限 `Repository permissions` -> `Contents` 开启 Read-only.
+- 拉取速度因网络环境有所差异，建议单独建立一个仓库存放配置，速度极佳。
