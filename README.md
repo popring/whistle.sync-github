@@ -20,6 +20,8 @@
 
 **文件内容以 `# Rules` 则视为 Rules 配置，其他均为 Values 配置。**
 
+可参考：https://github.com/popring/whistle-config-example
+
 # 使用
 
 - 打开 `https://local.whistlejs.com/#plugins` ， 进入 plugin 页面，点击 whistle.sync-github `option` 进入配置，填写完成后点击保存配置
