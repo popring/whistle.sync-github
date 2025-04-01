@@ -39,7 +39,6 @@ async function getRepositoryFiles(repoPath: string, path = "") {
     headers["Authorization"] = `Bearer ${config.token}`;
   }
 
-  console.log("Fetching GitHub repo files from:", url);
   const response = await axios.get(url, { headers });
 
   if (response.status !== 200) {
@@ -94,8 +93,6 @@ async function getFileContent(
   if (config.token) {
     headers["Authorization"] = `Bearer ${config.token}`;
   }
-
-  console.log("Fetching file content from:", url);
 
   try {
     const response = await axios.get(url, { headers });

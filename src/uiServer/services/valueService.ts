@@ -3,7 +3,6 @@ import { getRepositoryFiles } from "./githubService";
 import { config } from "../config";
 
 export const getAllValues = async () => {
-  console.log("getAllValues", config.repo);
   const files = await getRepositoryFiles(config.repo);
   const res: Record<string, string> = {};
 

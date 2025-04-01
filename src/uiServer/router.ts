@@ -13,8 +13,8 @@ export default (router: Router) => {
   });
 
   router.get("/cgi-bin/values", async (ctx, next) => {
-    console.log("cgi-bin/values", ctx);
-    ctx.body = await getAllValues();
+    const values = await getAllValues();
+    ctx.body = values;
   });
   
   router.get("/cgi-bin/get-repo-files", async (ctx, next) => {
