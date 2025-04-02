@@ -4,10 +4,14 @@
 该插件从 github 拉取 Rules, Values 配置。
 
 # 安装
+
 1. 首先需要安装最新版 [whistle](https://github.com/avwo/whistle)，如果你的机器已经安装了 whistle，请确保 whistle 为最新版本：
-    - 安装及如何使用 whistle 参见 [Github](https://github.com/avwo/whistle)
-    - 如何升级 whistle 参见[帮助文档](http://wproxy.org/whistle/update.html)。
-2. 安装inspect插件：
+
+   - 安装及如何使用 whistle 参见 [Github](https://github.com/avwo/whistle)
+   - 如何升级 whistle 参见[帮助文档](http://wproxy.org/whistle/update.html)。
+
+2. 安装 sync-github 插件：
+
     ```
     w2 i whistle.sync-github
     ```
