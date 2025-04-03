@@ -33,5 +33,5 @@
 
 # 注意事项
 
-- 如需使用 token ，记得 token 权限 `Repository permissions` -> `Contents` 开启 Read-only.
+- 当需访问 `Private` 仓库可使用 token ，记得 token 权限 `Repository permissions` -> `Contents` 开启 Read-only.
 - 拉取速度因网络环境有所差异，建议单独建立一个仓库存放配置，速度极佳。
