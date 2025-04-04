@@ -1,12 +1,10 @@
 {
-  "token": "",
-  "repo": "",
-  "lastSync": "2025-04-04T14:11:31.773Z",
   "syncType": "git",
   "git": {
-    "repoUrl": "https://github.com/popring/whistle-config-example",
+    "repoUrl": "git@github.com:popring/whistle-config-example.git",
     "branch": "main",
     "rulesFolder": "rules",
     "valuesFolder": "values"
-  }
+  },
+  "lastSync": "2025-04-04T14:36:12.833Z"
 }
