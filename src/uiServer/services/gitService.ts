@@ -18,8 +18,8 @@ if (!fs.existsSync(TMP_DIR)) {
  */
 function getRepoDir(repoUrl: string): string {
   // 从URL中提取仓库名称
-  let repoName = repoUrl.split('/').pop()?.replace('.git', '') || 'repo';
-  
+  let repoName = repoUrl.split("/").pop()?.replace(".git", "") || "repo";
+
   return path.join(TMP_DIR, repoName);
 }
 
@@ -35,19 +35,19 @@ async function initGitRepo(
 ): Promise<SimpleGit> {
   // 为当前仓库创建特定的目录
   const repoDir = getRepoDir(repoUrl);
-  
+
   // 确保仓库目录存在
   if (!fs.existsSync(repoDir)) {
     fs.mkdirSync(repoDir, { recursive: true });
   }
-  
+
   console.log("初始化Git仓库到", repoDir);
-  
+
   const git = simpleGit(repoDir);
-  
+
   // 检查是否已经是Git仓库（检查.git目录是否存在）
-  const isRepo = fs.existsSync(path.join(repoDir, '.git'));
-  
+  const isRepo = fs.existsSync(path.join(repoDir, ".git"));
+
   if (!isRepo) {
     console.log("不是Git仓库，克隆远程仓库...");
     // 如果不是Git仓库，则执行克隆操作
@@ -56,10 +56,10 @@ async function initGitRepo(
       fs.rmSync(repoDir, { recursive: true, force: true });
       fs.mkdirSync(repoDir, { recursive: true });
     }
-    
+
     // 使用clone操作而不是init + remote
     await git.clone(repoUrl, repoDir);
-    
+
     // 克隆之后切换到指定分支
     await git.checkout(branch);
   } else {
@@ -77,18 +77,18 @@ async function initGitRepo(
       await git.addRemote("origin", repoUrl);
     }
   }
-  
+
   console.log("获取远程分支...");
-  
+
   // 尝试获取远程分支
   try {
     await git.fetch("origin", branch);
   } catch (error) {
     throw new Error(`无法连接到Git仓库或分支不存在: ${error.message}`);
   }
-  
+
   console.log("检出分支...");
-  
+
   // 检出指定分支
   try {
     // 尝试切换到指定分支
@@ -101,26 +101,34 @@ async function initGitRepo(
     await git.checkout(["-b", branch]);
   }
 
+  console.log("initGitRepo success");
+
   return git;
+}
+
+function checkGitRepo(repoUrl: string) {
+  const repoDir = getRepoDir(repoUrl);
+  return fs.existsSync(repoDir) && repoDir;
 }
 
 /**
  * 从Git仓库获取文件列表
  * @param repoUrl 仓库URL
- * @param branch 分支名
  * @returns 文件列表
  */
 export async function getRepositoryFiles(
   repoUrl: string,
-  branch: string = "main"
-): Promise<string[]> {
+): Promise<Record<string, string>> {
+  if (!config.git?.repoUrl) {
+    throw new Error("未配置Git仓库");
+  }
   try {
-    // 从仓库获取
-    const git = await initGitRepo(repoUrl, branch);
-    const repoDir = getRepoDir(repoUrl);
+    const repoDir = checkGitRepo(repoUrl);
+    if (!repoDir) {
+      throw new Error("Git仓库不存在");
+    }
 
-    // 获取工作目录中的所有文件（排除.git目录）
-    const files: string[] = [];
+    const filesContent: Record<string, string> = {};
     const readDir = (dir: string) => {
       const items = fs.readdirSync(dir);
       for (const item of items) {
@@ -132,14 +140,14 @@ export async function getRepositoryFiles(
         if (fs.lstatSync(fullPath).isDirectory()) {
           readDir(fullPath);
         } else {
-          files.push(relativePath);
+          filesContent[relativePath] = fs.readFileSync(fullPath, "utf-8");
         }
       }
     };
 
     readDir(repoDir);
-    
-    return files;
+
+    return filesContent;
   } catch (error) {
     console.error("获取Git仓库文件失败:", error);
     throw new Error(`获取Git仓库文件失败: ${error.message}`);
@@ -172,7 +180,7 @@ export async function getFileContent(
     }
 
     const content = fs.readFileSync(fullPath, "utf-8");
-    
+
     return content;
   } catch (error) {
     console.error("获取文件内容失败:", error);
