@@ -62,4 +62,7 @@ typings/
 /.history
 /dist
 
-.git-tmp
+# whistle.sync-github
+.git-tmp/*
+config.json
+.console.log

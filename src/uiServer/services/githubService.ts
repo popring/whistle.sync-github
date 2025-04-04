@@ -2,7 +2,7 @@ import axios from "axios";
 import { config } from "../config";
 
 // Recursively fetch all files in a repository
-async function getRepositoryFiles(repoPath: string, path = "") {
+async function getGithubRepositoryFiles(repoPath: string, path = ""): Promise<string[]> {
   // Process repo path to handle various input formats
   repoPath = repoPath.trim();
 
@@ -65,7 +65,7 @@ async function getRepositoryFiles(repoPath: string, path = "") {
     if (item.type === "file") {
       files.push(item.path);
     } else if (item.type === "dir") {
-      const dirFiles = await getRepositoryFiles(repoPath, item.path);
+      const dirFiles = await getGithubRepositoryFiles(repoPath, item.path);
       files = files.concat(dirFiles);
     }
   }
@@ -117,7 +117,8 @@ async function getFileContent(
 
     if (encoding === "base64") {
       // 解码Base64内容
-      return Buffer.from(content, "base64").toString("utf-8");
+      const decodedContent = Buffer.from(content, "base64").toString("utf-8");
+      return decodedContent;
     } else {
       throw new Error(`不支持的编码格式: ${encoding}`);
     }
@@ -132,4 +133,33 @@ async function getFileContent(
   }
 }
 
-export { getRepositoryFiles, getFileContent };
+/**
+ * 从远程GitHub仓库同步数据
+ */
+async function syncFromRemote(): Promise<{
+  success: boolean;
+  message: string;
+}> {
+  try {
+    if (!config.repo) {
+      throw new Error("未配置GitHub仓库");
+    }
+    
+    // 从远程获取最新文件列表
+    await getGithubRepositoryFiles(config.repo);
+    
+    return {
+      success: true,
+      message: "成功从GitHub仓库同步"
+    };
+  } catch (error) {
+    console.error("从GitHub同步失败:", error);
+    throw new Error(`从GitHub同步失败: ${error.message}`);
+  }
+}
+
+export { 
+  getGithubRepositoryFiles, 
+  getFileContent,
+  syncFromRemote
+};
