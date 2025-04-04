@@ -21,6 +21,9 @@ const configPath = path.join(__dirname, "../config.json");
 
 function loadConfig() {
   try {
+    if (!fs.existsSync(configPath)) {
+      fs.writeFileSync(configPath, JSON.stringify({}, null, 2), "utf8");
+    }
     return JSON.parse(fs.readFileSync(configPath, "utf8"));
   } catch (error) {
     console.error("Error reading config file:", error);

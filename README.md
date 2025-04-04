@@ -18,23 +18,51 @@
     > 或使用 cnpm 镜像 `w2 i whistle.sync-github --registry=https://registry.nlark.com`
     > 如果已安装 cnpm，还可以用 `w2 ci whistle.sync-github`
 
-# github 保存配置
+# 保存配置在 Github
 
-将需要备份的配置上传到仓库即可
-
-**文件内容以 `# Rules` 则视为 Rules 配置，其他均为 Values 配置。**
-
-可参考：https://github.com/popring/whistle-config-example
+- 将需要备份的配置上传到仓库即可.
+- Rules 和 Values 分别放在两个文件夹中，方便区分.
 
 # 使用
 
-- 打开 `https://local.whistlejs.com/#plugins` ， 进入 plugin 页面，点击 whistle.sync-github `option` 进入配置，填写完成后点击保存配置
-- 返回插件列表页，点击 sync 进行同步，弹出弹窗选择 Rules/Values，点击即可拉取 github 仓库文件。
+- 打开 `https://local.whistlejs.com/#plugins` ， 进入 plugin 页面, 确保插件 `sync-github` 是激活状态，点击 `sync-github`
+![](./assets/1.png)
 
-# 注意事项
+- 填写 Git 仓库地址、分支、rules 文件夹、 values 文件夹信息，点击保存配置，然后再点击 `从Git同步`
+![](./assets/2.png)
 
-- 当需访问 `Private` 仓库可使用 token ，记得 token 权限 `Repository permissions` -> `Contents` 开启 Read-only.
-- 拉取速度因网络环境有所差异，建议单独建立一个仓库存放配置，速度极佳。
+- 等提示同步成功
+![](./assets/3.png)
+
+- 关闭此弹窗，返回 Plugins 页面，点击 Sync 按钮
+![](./assets/4.png)
+
+- 此时就可以选择拉取远端的 Rules 或者 Values 了
+![](./assets/5.png)
+
+- 若你填的配置和我的一样，那么点击 `Sync Rules`，你应该看到的和我的一样
+![](./assets/6.png)
+
+- 然后就是根据需要添加规则；不需要的点击 `Delete` 就不会在本次添加中添加到你本地；点击 `Content` 可以查看文件内容
+
+
+# 同步原理
+
+## Git 同步
+
+- 根据配置，直接拉取仓库到本地，然后在 Plugins 页面，点击 Sync Rule/Values 即直接读取本地已同步的数据。
+
+- 同步操作：需要近配置页面，点击 `从Git同步` 按钮，然后再在 Plugins 页面，点击 `Sync Rule/Values`，即可同步。（Whistle 限制 `Sync Rule/Values` 请求时常过长会超时，所以只能将数据同步按钮放至内层）。
+
+- 推荐，适合同步较多文件
+
+## Github 同步
+
+- 直接通过 Github rest API 获取内容，（如需获取有权限的仓库需配置 token 记得开仓库读权限）；
+
+- 同步操作：仅使用前配置一次仓库地址和 token 即可，后续直接在  Plugins 页面点击点击 `Sync Rule/Values`，即可同步。
+  
+- 不推荐，适合只同步较少的文件
 
 # 反馈
 
