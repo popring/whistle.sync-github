@@ -17,7 +17,9 @@ export const getAllValues = async () => {
     const res: Record<string, string> = {};
 
     if (syncType === "git") {
-      const filesContent = await getGitRepositoryFiles(config.git.repoUrl);
+      const filesContent = await getGitRepositoryFiles(
+        config.git.valuesFolder
+      );
       return filesContent;
     } else {
       // 使用GitHub同步

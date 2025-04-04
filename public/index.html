@@ -80,6 +80,34 @@
             value="main"
           />
         </div>
+        
+        <div class="form-group">
+          <label>同步文件夹设置 <span class="required">(必填且不能相同)</span></label>
+          <div class="input-group">
+            <div class="form-group">
+              <label for="rules-folder">rules 文件夹</label>
+              <input
+                type="text"
+                id="rules-folder"
+                name="rules-folder"
+                placeholder="rules文件夹路径"
+                value="rules"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="values-folder">values 文件夹</label>
+              <input
+                type="text"
+                id="values-folder"
+                name="values-folder"
+                placeholder="values文件夹路径"
+                value="values"
+                required
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       <div id="notification" class="notification hide"></div>

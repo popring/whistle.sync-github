@@ -4,6 +4,8 @@ import path from "path";
 type GitConfig = {
   repoUrl: string;
   branch: string;
+  rulesFolder?: string;
+  valuesFolder?: string;
 };
 
 type Config = {

@@ -14,6 +14,8 @@ function initializeEventListeners() {
   const syncFromRemoteBtn = document.getElementById("sync-from-remote");
   const syncToRemoteBtn = document.getElementById("sync-to-remote");
   const githubSyncBtn = document.getElementById("github-sync-btn");
+  const rulesFolderInput = document.getElementById("rules-folder");
+  const valuesFolderInput = document.getElementById("values-folder");
 
   if (confirmButton) {
     confirmButton.addEventListener("click", handleConfirmSelection);
@@ -39,6 +41,12 @@ function initializeEventListeners() {
   
   if (githubSyncBtn) {
     githubSyncBtn.addEventListener("click", handleGithubSync);
+  }
+  
+  // 为文件夹输入框添加验证
+  if (rulesFolderInput && valuesFolderInput) {
+    rulesFolderInput.addEventListener("input", validateFolderInputs);
+    valuesFolderInput.addEventListener("input", validateFolderInputs);
   }
 }
 
@@ -113,6 +121,8 @@ function updateConfigurationUI(config) {
   const syncStatus = document.getElementById("sync-status");
   const lastSync = document.getElementById("last-updated");
   const syncTypeSelect = document.getElementById("sync-type");
+  const rulesFolderInput = document.getElementById("rules-folder");
+  const valuesFolderInput = document.getElementById("values-folder");
 
   // 设置同步类型
   if (config.syncType) {
@@ -133,6 +143,12 @@ function updateConfigurationUI(config) {
   if (config.git) {
     document.getElementById("git-repo-url").value = config.git.repoUrl || "";
     document.getElementById("git-branch").value = config.git.branch || "main";
+    
+    // 更新文件夹路径
+    if (rulesFolderInput && valuesFolderInput) {
+      rulesFolderInput.value = config.git.rulesFolder || "rules";
+      valuesFolderInput.value = config.git.valuesFolder || "values";
+    }
   }
 
   // 更新状态显示
@@ -175,9 +191,26 @@ async function handleSaveConfig() {
   } else {
     const gitRepoUrl = document.getElementById("git-repo-url").value.trim();
     const gitBranch = document.getElementById("git-branch").value.trim();
+    const rulesFolder = document.getElementById("rules-folder").value.trim();
+    const valuesFolder = document.getElementById("values-folder").value.trim();
 
     if (!gitRepoUrl) {
       showNotification("请输入Git仓库地址", "error");
+      return;
+    }
+    
+    if (!rulesFolder) {
+      showNotification("请输入rules文件夹路径", "error");
+      return;
+    }
+    
+    if (!valuesFolder) {
+      showNotification("请输入values文件夹路径", "error");
+      return;
+    }
+    
+    if (rulesFolder === valuesFolder) {
+      showNotification("rules和values文件夹路径不能相同", "error");
       return;
     }
 
@@ -185,7 +218,9 @@ async function handleSaveConfig() {
       syncType,
       git: {
         repoUrl: gitRepoUrl,
-        branch: gitBranch || "main"
+        branch: gitBranch || "main",
+        rulesFolder: rulesFolder,
+        valuesFolder: valuesFolder
       }
     };
   }
@@ -455,4 +490,26 @@ async function handleGithubSync() {
     loader.style.display = "none";
     document.getElementById("github-sync-btn").disabled = false;
   }
+}
+
+// 验证文件夹输入
+function validateFolderInputs() {
+  const rulesFolderInput = document.getElementById("rules-folder");
+  const valuesFolderInput = document.getElementById("values-folder");
+  const saveButton = document.getElementById("save-config-btn");
+  
+  // 检查两个文件夹是否相同
+  if (rulesFolderInput.value === valuesFolderInput.value && rulesFolderInput.value !== "") {
+    rulesFolderInput.setCustomValidity("Rules和Values文件夹不能相同");
+    valuesFolderInput.setCustomValidity("Rules和Values文件夹不能相同");
+    saveButton.disabled = true;
+  } else {
+    rulesFolderInput.setCustomValidity("");
+    valuesFolderInput.setCustomValidity("");
+    saveButton.disabled = false;
+  }
+  
+  // 显示验证信息
+  rulesFolderInput.reportValidity();
+  valuesFolderInput.reportValidity();
 }

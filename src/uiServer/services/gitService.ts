@@ -117,39 +117,39 @@ function checkGitRepo(repoUrl: string) {
  * @returns 文件列表
  */
 export async function getRepositoryFiles(
-  repoUrl: string,
+  folder: string
 ): Promise<Record<string, string>> {
-  if (!config.git?.repoUrl) {
+  const repoUrl = config.git?.repoUrl;
+  if (!repoUrl) {
     throw new Error("未配置Git仓库");
   }
-  try {
-    const repoDir = checkGitRepo(repoUrl);
-    if (!repoDir) {
-      throw new Error("Git仓库不存在");
-    }
 
+  const repoDir = checkGitRepo(repoUrl);
+  if (!repoDir) {
+    throw new Error("Git仓库不存在");
+  }
+  try {
     const filesContent: Record<string, string> = {};
     const readDir = (dir: string) => {
+      // 检测文件是否存在
+      if (!fs.existsSync(dir)) {
+        throw new Error(`文件夹不存在: ${dir}`);
+      }
       const items = fs.readdirSync(dir);
       for (const item of items) {
-        if (item === ".git") continue;
-
         const fullPath = path.join(dir, item);
         const relativePath = path.relative(repoDir, fullPath);
 
-        if (fs.lstatSync(fullPath).isDirectory()) {
-          readDir(fullPath);
-        } else {
+        if (fs.lstatSync(fullPath).isFile()) {
           filesContent[relativePath] = fs.readFileSync(fullPath, "utf-8");
         }
       }
     };
 
-    readDir(repoDir);
+    readDir(path.resolve(repoDir, folder));
 
     return filesContent;
   } catch (error) {
-    console.error("获取Git仓库文件失败:", error);
     throw new Error(`获取Git仓库文件失败: ${error.message}`);
   }
 }
@@ -335,7 +335,6 @@ export async function syncFromRemote(force: boolean = false): Promise<{
 
   try {
     const git = await initGitRepo(config.git.repoUrl, config.git.branch);
-    console.log("git111111,", git);
     // 检查冲突状态
     const conflictStatus = await getConflictStatus();
 

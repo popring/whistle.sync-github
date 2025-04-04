@@ -316,4 +316,33 @@ button:active {
 
 .sync-buttons button:hover {
   background-color: var(--primary-light);
+}
+
+.input-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.input-group .form-group {
+  flex: 1;
+}
+
+.required {
+  color: #e74c3c;
+  font-size: 0.85em;
+  font-weight: normal;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 } 

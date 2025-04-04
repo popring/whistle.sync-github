@@ -13,11 +13,9 @@ export default (router: Router) => {
       const rules = await getAllRules();
       ctx.body = rules;
     } catch (error) {
-      console.error("获取规则失败:", error);
-      ctx.body = { 
+      ctx.body = JSON.stringify({
         error: error.message || "获取规则失败，请检查同步配置",
-        detail: error.stack 
-      };
+      });
       ctx.status = 500;
     }
   });
@@ -27,11 +25,9 @@ export default (router: Router) => {
       const values = await getAllValues();
       ctx.body = values;
     } catch (error) {
-      console.error("获取值失败:", error);
-      ctx.body = { 
+      ctx.body = JSON.stringify({
         error: error.message || "获取值失败，请检查同步配置",
-        detail: error.stack 
-      };
+      });
       ctx.status = 500;
     }
   });

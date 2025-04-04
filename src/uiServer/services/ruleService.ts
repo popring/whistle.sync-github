@@ -15,7 +15,9 @@ export const getAllRules = async () => {
 
     if (syncType === "git") {
       // 使用Git同步
-      const files = await getGitRepositoryFiles(config.git.repoUrl);
+      const files = await getGitRepositoryFiles(
+        config.git.rulesFolder
+      );
       return files;
     } else {
       // 创建结果对象
