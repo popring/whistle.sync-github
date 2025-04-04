@@ -1,10 +1,17 @@
 import fs from "fs";
 import path from "path";
 
+type GitConfig = {
+  repoUrl: string;
+  branch: string;
+};
+
 type Config = {
+  syncType?: "github" | "git";
   token: string;
   repo: string;
   lastSync: string;
+  git?: GitConfig;
   [key: string | symbol]: any;
 };
 

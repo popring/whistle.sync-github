@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>Whistle GitHub 同步工具</h1>
+    <h1>Whistle 同步工具</h1>
     
     <div class="container">
       <div id="status-message">
@@ -23,30 +23,79 @@
       </div>
 
       <div class="form-group">
-        <label for="repo-url">GitHub 仓库地址</label>
-        <input
-          type="text"
-          id="repo-url"
-          placeholder="输入您的GitHub仓库地址, 格式: owner/repo"
-        />
+        <label for="sync-type">同步方式</label>
+        <select id="sync-type">
+          <option value="github">GitHub 同步</option>
+          <option value="git">Git 同步</option>
+        </select>
       </div>
 
-      <div class="form-group">
-        <label for="github-token">
-          GitHub Token
-          <span class="optional">(可选，用于提高API访问限制)</span>
-        </label>
-        <input
-          type="text"
-          id="github-token"
-          placeholder="输入您的GitHub个人访问令牌"
-        />
+      <div id="github-config">
+        <div class="form-group">
+          <label for="repo-url">GitHub 仓库地址</label>
+          <input
+            type="text"
+            id="repo-url"
+            placeholder="输入您的GitHub仓库地址, 格式: owner/repo"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="github-token">
+            GitHub Token
+            <span class="optional">(可选，用于提高API访问限制)</span>
+          </label>
+          <input
+            type="text"
+            id="github-token"
+            placeholder="输入您的GitHub个人访问令牌"
+          />
+        </div>
+        
+        <div class="sync-buttons">
+          <button id="github-sync-btn">从GitHub同步</button>
+        </div>
+      </div>
+
+      <div id="git-config" style="display: none;">
+        <div class="info-box">
+          <p>此模式将使用本地Git全局配置进行同步操作，无需额外的认证配置。</p>
+        </div>
+        
+        <div class="form-group">
+          <label for="git-repo-url">Git 仓库地址</label>
+          <input
+            type="text"
+            id="git-repo-url"
+            placeholder="输入完整的Git仓库URL (https://... 或 git@...)"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="git-branch">分支</label>
+          <input
+            type="text"
+            id="git-branch"
+            placeholder="输入分支名称，默认为main"
+            value="main"
+          />
+        </div>
       </div>
 
       <div id="notification" class="notification hide"></div>
       
       <div class="button-group">
         <button id="save-config-btn">保存配置</button>
+        <button id="fetch-btn">获取文件列表</button>
+      </div>
+      
+      <div id="git-sync-buttons" style="display: none;">
+        <button id="sync-from-remote">从Git同步</button>
+        <button id="sync-to-remote">同步到Git</button>
+      </div>
+      
+      <div class="info-box">
+        <p><strong>注意:</strong> 请通过点击相应的同步按钮获取最新数据。</p>
       </div>
       
       <div class="loader" id="loader"></div>
