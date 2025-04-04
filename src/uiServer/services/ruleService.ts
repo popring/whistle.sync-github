@@ -1,4 +1,4 @@
-import { getFileContent as getGithubFileContent, getRepositoryFiles as getGithubRepositoryFiles } from "./githubService";
+import { getFileContent as getGithubFileContent, getGithubRepositoryFiles } from "./githubService";
 import { getFileContent as getGitFileContent, getRepositoryFiles as getGitRepositoryFiles } from "./gitService";
 import { config } from "../config";
 

@@ -1,27 +1,8 @@
 import axios from "axios";
 import { config } from "../config";
 
-// 缓存机制，存储已获取的文件列表和内容
-interface Cache {
-  files: Map<string, string[]>;
-  contents: Map<string, Map<string, string>>;
-  lastSync: Date | null;
-}
-
-const cache: Cache = {
-  files: new Map(), // 仓库路径 -> 文件列表
-  contents: new Map(), // 仓库路径 -> (文件路径 -> 文件内容)
-  lastSync: null,
-};
-
 // Recursively fetch all files in a repository
-async function getRepositoryFiles(repoPath: string, path = "", forceUpdate: boolean = false): Promise<string[]> {
-  // 检查缓存，如果有且不强制更新，直接返回
-  if (!forceUpdate && cache.files.has(repoPath)) {
-    console.log("使用GitHub缓存的文件列表");
-    return cache.files.get(repoPath) || [];
-  }
-  
+async function getGithubRepositoryFiles(repoPath: string, path = ""): Promise<string[]> {
   // Process repo path to handle various input formats
   repoPath = repoPath.trim();
 
@@ -84,31 +65,18 @@ async function getRepositoryFiles(repoPath: string, path = "", forceUpdate: bool
     if (item.type === "file") {
       files.push(item.path);
     } else if (item.type === "dir") {
-      const dirFiles = await getRepositoryFiles(repoPath, item.path);
+      const dirFiles = await getGithubRepositoryFiles(repoPath, item.path);
       files = files.concat(dirFiles);
     }
   }
-  
-  // 更新缓存
-  cache.files.set(repoPath, files);
-  cache.lastSync = new Date();
 
   return files;
 }
 
 async function getFileContent(
   repoPath: string,
-  filePath: string,
-  forceUpdate: boolean = false
+  filePath: string
 ): Promise<string> {
-  // 检查缓存，如果有且不强制更新，直接返回
-  if (!forceUpdate && 
-      cache.contents.has(repoPath) && 
-      cache.contents.get(repoPath)?.has(filePath)) {
-    console.log(`使用GitHub缓存的文件内容: ${filePath}`);
-    return cache.contents.get(repoPath)?.get(filePath) || "";
-  }
-  
   if (!repoPath || !filePath) {
     throw new Error("仓库路径和文件路径不能为空");
   }
@@ -150,13 +118,6 @@ async function getFileContent(
     if (encoding === "base64") {
       // 解码Base64内容
       const decodedContent = Buffer.from(content, "base64").toString("utf-8");
-      
-      // 更新缓存
-      if (!cache.contents.has(repoPath)) {
-        cache.contents.set(repoPath, new Map());
-      }
-      cache.contents.get(repoPath)?.set(filePath, decodedContent);
-      
       return decodedContent;
     } else {
       throw new Error(`不支持的编码格式: ${encoding}`);
@@ -173,25 +134,7 @@ async function getFileContent(
 }
 
 /**
- * 清除缓存，强制下次请求从远程获取
- */
-function clearCache() {
-  cache.files.clear();
-  cache.contents.clear();
-  cache.lastSync = null;
-  console.log("已清除GitHub缓存");
-}
-
-/**
- * 获取最后同步时间
- * @returns 最后同步时间
- */
-function getLastSyncTime(): Date | null {
-  return cache.lastSync;
-}
-
-/**
- * 从远程GitHub仓库同步数据（强制刷新缓存）
+ * 从远程GitHub仓库同步数据
  */
 async function syncFromRemote(): Promise<{
   success: boolean;
@@ -202,13 +145,8 @@ async function syncFromRemote(): Promise<{
       throw new Error("未配置GitHub仓库");
     }
     
-    // 强制从远程获取最新文件列表
-    await getRepositoryFiles(config.repo, "", true);
-    
-    // 清除内容缓存，文件内容将在下次请求时按需获取
-    if (cache.contents.has(config.repo)) {
-      cache.contents.delete(config.repo);
-    }
+    // 从远程获取最新文件列表
+    await getGithubRepositoryFiles(config.repo);
     
     return {
       success: true,
@@ -221,9 +159,7 @@ async function syncFromRemote(): Promise<{
 }
 
 export { 
-  getRepositoryFiles, 
-  getFileContent, 
-  clearCache, 
-  getLastSyncTime,
+  getGithubRepositoryFiles, 
+  getFileContent,
   syncFromRemote
 };

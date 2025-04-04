@@ -108,13 +108,11 @@ async function initGitRepo(
  * 从Git仓库获取文件列表
  * @param repoUrl 仓库URL
  * @param branch 分支名
- * @param forceUpdate 是否强制更新(此参数保留，但不再有缓存功能)
  * @returns 文件列表
  */
 export async function getRepositoryFiles(
   repoUrl: string,
-  branch: string = "main",
-  forceUpdate: boolean = false
+  branch: string = "main"
 ): Promise<string[]> {
   try {
     // 从仓库获取

@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "tsc -w"
+    "watch": "tsc -w",
+    "dev": "npm run watch & lack watch"
   },
   "whistleConfig": {
     "rulesUrl": "/cgi-bin/rules",
-    "valuesUrl": "/cgi-bin/values"
+    "valuesUrl": "/cgi-bin/values",
+    "openInModal": true
   },
   "devDependencies": {
     "@types/koa": "^2.13.4",

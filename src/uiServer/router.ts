@@ -1,7 +1,7 @@
 import Router from "koa-router";
 import { getAllRules } from "./services/ruleService";
 import { getAllValues } from "./services/valueService";
-import { getRepositoryFiles, syncFromRemote as syncGithubFromRemote } from "./services/githubService";
+import { syncFromRemote as syncGithubFromRemote } from "./services/githubService";
 import { saveGitHubConfig, getGitHubConfig } from "./services/configService";
 import { Config } from "./config";
 import * as gitService from "./services/gitService";
@@ -32,26 +32,6 @@ export default (router: Router) => {
         error: error.message || "获取值失败，请检查同步配置",
         detail: error.stack 
       };
-      ctx.status = 500;
-    }
-  });
-  
-  router.get("/cgi-bin/get-repo-files", async (ctx, next) => {
-    const repoPath = ctx.query.repoPath as string;
-    const syncType = ctx.query.syncType as string;
-    const forceUpdate = (ctx.query.forceUpdate === 'true');
-    
-    try {
-      if (syncType === 'git') {
-        // 使用Git服务获取文件
-        const branch = ctx.query.branch as string || 'main';
-        ctx.body = await gitService.getRepositoryFiles(repoPath, branch, forceUpdate);
-      } else {
-        // 默认使用GitHub服务
-        ctx.body = await getRepositoryFiles(repoPath, "", forceUpdate);
-      }
-    } catch (error) {
-      ctx.body = { error: error.message };
       ctx.status = 500;
     }
   });

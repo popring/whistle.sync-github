@@ -8,17 +8,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Set up event listeners
 function initializeEventListeners() {
-  const fetchButton = document.getElementById("fetch-btn");
   const confirmButton = document.getElementById("confirm-btn");
   const saveConfigButton = document.getElementById("save-config-btn");
   const syncTypeSelect = document.getElementById("sync-type");
   const syncFromRemoteBtn = document.getElementById("sync-from-remote");
   const syncToRemoteBtn = document.getElementById("sync-to-remote");
   const githubSyncBtn = document.getElementById("github-sync-btn");
-
-  if (fetchButton) {
-    fetchButton.addEventListener("click", handleFetchRepository);
-  }
 
   if (confirmButton) {
     confirmButton.addEventListener("click", handleConfirmSelection);
@@ -155,73 +150,6 @@ function updateConfigurationUI(config) {
     lastSync.textContent = date.toLocaleString("zh-CN");
   } else {
     lastSync.textContent = "从未";
-  }
-}
-
-// Handle repository fetch button click
-async function handleFetchRepository() {
-  const syncType = document.getElementById("sync-type").value;
-  let repoPath, branch, token;
-  
-  if (syncType === "github") {
-    repoPath = document.getElementById("repo-url").value.trim();
-    token = document.getElementById("github-token").value.trim();
-    
-    if (!repoPath) {
-      showNotification("请输入GitHub仓库地址", "error");
-      return;
-    }
-  } else {
-    repoPath = document.getElementById("git-repo-url").value.trim();
-    branch = document.getElementById("git-branch").value.trim() || "main";
-    
-    if (!repoPath) {
-      showNotification("请输入Git仓库地址", "error");
-      return;
-    }
-  }
-  
-  // 显示加载状态
-  const loader = document.getElementById("loader");
-  loader.style.display = "inline-block";
-  const fetchBtn = document.getElementById("fetch-btn");
-  if (fetchBtn) fetchBtn.disabled = true;
-
-  try {
-    // 构建请求URL
-    let url = `/cgi-bin/get-repo-files?repoPath=${encodeURIComponent(repoPath)}`;
-    
-    if (syncType === "git") {
-      url += `&syncType=git&branch=${encodeURIComponent(branch)}`;
-    } else if (token) {
-      url += `&token=${encodeURIComponent(token)}`;
-    }
-    
-    // 默认使用缓存，不强制更新
-    url += "&forceUpdate=false";
-    
-    // 发送请求到后端API获取仓库文件
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "获取仓库文件失败");
-    }
-
-    const files = await response.json();
-
-    // 显示文件列表
-    renderFileList(files);
-
-    document.getElementById("file-list").style.display = "block";
-    document.getElementById("confirm-btn").style.display = "block";
-    showNotification("仓库文件获取成功");
-  } catch (error) {
-    showNotification(`获取仓库内容失败: ${error.message}`, "error");
-  } finally {
-    // 隐藏加载状态
-    loader.style.display = "none";
-    if (fetchBtn) fetchBtn.disabled = false;
   }
 }
 
