@@ -16,7 +16,6 @@
     w2 i whistle.sync-github
     ```
     > 或使用 cnpm 镜像 `w2 i whistle.sync-github --registry=https://registry.nlark.com`
-    > 如果已安装 cnpm，还可以用 `w2 ci whistle.sync-github`
 
 # 保存配置在 Github
 
